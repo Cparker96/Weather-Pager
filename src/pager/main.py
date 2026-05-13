@@ -1,7 +1,7 @@
-from logger import logger
+from utils.utils import subscribe_by_state, subscribe_by_event, available_states, available_weather_events
+from logger.logger import logger
 import requests
 import time
-
 
 base_url = "https://eonet.gsfc.nasa.gov/api/v3/events"
 
@@ -11,6 +11,8 @@ headers = {
 }
 
 last_event_id = None
+states = subscribe_by_state(available_states)
+events = subscribe_by_event(available_weather_events)
 
 while True:
     try:
