@@ -1,7 +1,11 @@
 from utils.utils import subscribe_by_state, subscribe_by_event, available_states, available_weather_events
+from events.events import check_if_subscribed
 from logger.logger import logger
+from events.workers import event_thread
 import requests
+import threading
 import time
+import json
 
 base_url = "https://eonet.gsfc.nasa.gov/api/v3/events"
 
@@ -9,6 +13,9 @@ headers = {
     "Content-Type": "application/json",
     "Accept": "application/json"
 }
+# r = requests.get(url=base_url, headers=headers)
+# with open('a.json', 'w') as f:
+#     json.dump(r.json(), f)
 
 last_event_id = None
 states = subscribe_by_state(available_states)
@@ -37,11 +44,17 @@ while True:
 
         # detect new event
         elif current_event_id != last_event_id:
-            logger.info("NEW EVENT DETECTED")
-            logger.info(latest_event)
-
             last_event_id = current_event_id
-
+            logger.info(f"New event detected with ID: {current_event_id}")
+            
+            # check if user is subscribed to either state or weather event 
+            state_sub, event_sub = check_if_subscribed(states, events, latest_event)
+            if state_sub and event_sub:
+                threading.Thread(
+                    target=event_thread,
+                    args=(latest_event,),
+                    daemon=True
+                )
         else:
             logger.info("No new event")
 
@@ -52,4 +65,4 @@ while True:
         logger.info(f"Unexpected error: {e}")
 
     # avoid hammering API
-    time.sleep(20)
+    time.sleep(60)
