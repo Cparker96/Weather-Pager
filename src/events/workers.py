@@ -25,6 +25,9 @@ def event_thread(event_queue: queue.Queue):
                         image = plot_coordinates(latest_event)
                         metadata = pack_metadata(latest_event, image)
                         send_notification(image, metadata)
+                # default case
+                case _:
+                    logger.info(f"unknown weather event '{event_type}' | ID: {latest_event['id']}")
 
             logger.info(f"Finished processing: {latest_event['id']}")
 

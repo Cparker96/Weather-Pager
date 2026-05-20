@@ -1,7 +1,6 @@
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from logger.logger import logger
 from io import BytesIO
 
 def check_if_subscribed(states: list[str], events: list[str], latest_event: dict):

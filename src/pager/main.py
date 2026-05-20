@@ -5,7 +5,6 @@ from events.workers import event_thread
 import requests
 import threading
 import time
-import json
 
 base_url = "https://eonet.gsfc.nasa.gov/api/v3/events"
 
@@ -13,9 +12,6 @@ headers = {
     "Content-Type": "application/json",
     "Accept": "application/json"
 }
-# r = requests.get(url=base_url, headers=headers)
-# with open('a.json', 'w') as f:
-#     json.dump(r.json(), f)
 
 last_event_id = None
 states = subscribe_by_state(available_states)
